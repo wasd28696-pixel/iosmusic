@@ -48,11 +48,16 @@ function Resolve-Jdk21 {
     if ($onPath) { $candidates.Add((Split-Path (Split-Path $onPath.Source -Parent) -Parent)) }
 
     $rejected = @()
+    $seen = @{}
     foreach ($candidate in $candidates) {
-        if (!(Test-Path (Join-Path $candidate "bin\javac.exe"))) { continue }
-        $major = Get-JdkMajorVersion $candidate
-        if ($major -eq 21) { return (Resolve-Path $candidate).Path }
-        if ($major) { $rejected += "$candidate (Java $major)" }
+        if (!$candidate) { continue }
+        $normalized = $candidate.TrimEnd('\')
+        if ($seen.ContainsKey($normalized)) { continue }
+        $seen[$normalized] = $true
+        if (!(Test-Path (Join-Path $normalized "bin\javac.exe"))) { continue }
+        $major = Get-JdkMajorVersion $normalized
+        if ($major -eq 21) { return (Resolve-Path $normalized).Path }
+        if ($major) { $rejected += "$normalized (Java $major)" }
     }
 
     $hint = if ($rejected.Count) { "`n已检测到但版本不符：" + ($rejected -join "、") } else { "" }

@@ -62,39 +62,33 @@ Minecraft 没有公开 Apple 系统合成器那种材质 API，所以模组自�
 | --- | --- |
 | Minecraft | 1.21.1 |
 | NeoForge | 21.1.x（测试使用 21.1.233） |
+| Forge | 52.1.19 |
+| Fabric Loader | 0.16.0+（需 Fabric API） |
 | Java | 21 |
-| 测试实例 | `E:\.minecraft\versions\Create+` |
-| JDK | `E:\java\java21` |
 
 ## 安装
 
-把构建好的：
+从 [Releases](https://github.com/wasd28696-pixel/iosmusic/releases) 下载对应加载器的 jar：
 
-```
-build/libs/iosmusic-1.0.0.jar
-```
+| 加载器 | 文件 | 额外依赖 |
+| --- | --- | --- |
+| NeoForge 21.1.x | `iosmusic-1.0.0-neoforge.jar` | — |
+| Forge 52.1.x | `iosmusic-1.0.0-forge.jar` | — |
+| Fabric | `iosmusic-1.0.0-fabric.jar` | [Fabric API](https://modrinth.com/mod/fabric-api) |
 
-复制到：
+把下载到的 jar 放进 `.minecraft/mods/`，启动游戏即可。
 
-```
-E:\.minecraft\versions\Create+\mods\iosmusic-1.0.0.jar
-```
-
-启动游戏即可。本模组是客户端模组，不需要安装在服务器。
+本模组是客户端模组，正常游玩不需要安装在服务器；只有使用「一起听」功能时，服务器也需要安装同一版本。
 
 ## 快捷键
 
 | 快捷键 | 作用 |
 | --- | --- |
 | `O` | 打开/关闭播放器（标题界面和游戏内均可） |
-| `O` | 打开/关闭播放器界面 |
 | `P` | 播放/暂停 |
-| `]` | 下一首 |
 | `[` | 上一首 |
+| `]` | 下一首 |
 | `J` | 一起听页面 |
-| `P` | 播放/暂停 |
-| `[` | 上一首 |
-| `]` | 下一首 |
 | `L` | 打开/关闭歌词页（播放器内） |
 | `Ctrl + F` | 聚焦搜索框 |
 | `Esc` | 关闭弹窗 / 关闭播放器 |
@@ -129,39 +123,39 @@ http://127.0.0.1:3000
 
 ## 构建
 
-需要 JDK 21。构建脚本使用本地 `E:\.minecraft` 中的 NeoForge 依赖：
+需要 JDK 21。
+
+### NeoForge（1.21.1）
+
+构建脚本直接复用本地 Minecraft 启动器目录里的 NeoForge 依赖，默认路径为 `E:\.minecraft` 和 `E:\java\java21`，可用 `-McHome` / `-Jdk` 覆盖：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1 -Deploy
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1 `
+  -McHome "$env:APPDATA\.minecraft" -Jdk "C:\Program Files\Java\jdk-21"
 ```
 
-产物：`build/libs/iosmusic-1.0.0.jar`。
+产物：`build/libs/iosmusic-1.0.0.jar`。加 `-Deploy` 会额外复制到测试实例的 `mods` 目录。
 
-Forge 1.21.1（Forge 52.1.19）单独构建：
+### Forge（1.21.1 / Forge 52.1.19）
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build-forge.ps1
 ```
 
-Forge 产物：`build/forge/libs/iosmusic-1.0.0-forge.jar`，不会覆盖 NeoForge 版。Forge 版包含播放器、玻璃界面、灵动岛和外观设置；一起听联机通道暂未接入 Forge 网络层。
+产物：`build/forge/libs/iosmusic-1.0.0-forge.jar`，不会覆盖 NeoForge 版。Forge 版包含播放器、玻璃界面、灵动岛和外观设置；一起听联机通道暂未接入 Forge 网络层。
 
-Fabric 1.21.1 单独构建（需要 Fabric Loader 与 Fabric API）：
+### Fabric（1.21.1）
+
+需要 Fabric Loader 与 Fabric API：
 
 ```powershell
 cd fabric1211
 .\gradlew.bat build
 ```
 
-Fabric 产物：`fabric1211/build/libs/iosmusic-fabric-1.21.1-1.0.0.jar`。
+产物：`fabric1211/build/libs/iosmusic-fabric-1.21.1-1.0.0.jar`。
 
-1.20.1 Forge 版：
-
-```powershell
-cd forge1201
-.\gradlew.bat build
-```
-
-产物：`forge1201/build/libs/iosmusic-forge-1.20.1-1.0.0.jar`。1.20.1 为独立基础移植版，部分自定义半透明绘制仍在适配中。
+> 注：1.20.1 的 Forge 移植版暂不在此仓库中维护。
 
 ## 已知限制
 

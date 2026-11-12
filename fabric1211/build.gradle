@@ -1,0 +1,60 @@
+plugins {
+    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'maven-publish'
+}
+
+version = '1.0.0'
+group = 'dev.iosmusic'
+
+base {
+    archivesName = 'iosmusic-fabric-1.21.1'
+}
+
+repositories {
+    maven { url = 'https://maven.fabricmc.net/' }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft 'com.mojang:minecraft:1.21.1'
+    mappings loom.officialMojangMappings()
+    modImplementation 'net.fabricmc:fabric-loader:0.16.5'
+    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.116.17+1.21.1'
+    implementation files('../libs/jlayer-1.0.1.jar', '../libs/zxing-core-3.5.3.jar')
+}
+
+loom {
+    runs {
+        client {
+            client()
+            ideConfigGenerated(true)
+            runDir 'run'
+        }
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath
+            .filter { it.name.contains('jlayer') || it.name.contains('zxing') }
+            .collect { zipTree(it) }
+    }
+    manifest {
+        attributes([
+            'Implementation-Title'   : 'iOS Music Fabric 1.21.1',
+            'Implementation-Version' : project.version
+        ])
+    }
+}

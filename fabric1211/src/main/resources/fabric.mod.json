@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "iosmusic",
+  "version": "1.0.0",
+  "name": "iOS Music (Fabric 1.21.1)",
+  "description": "iOS 27 Liquid Glass music player for Minecraft 1.21.1 Fabric.",
+  "authors": ["iOS Music"],
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.iosmusic.IosMusicFabric"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21.1",
+    "java": ">=21"
+  }
+}

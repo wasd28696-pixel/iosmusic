@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+issueTrackerURL = "https://example.invalid/iosmusic/issues"
+displayTest = "IGNORE_ALL_VERSION"
+
+[[mods]]
+modId = "iosmusic"
+version = "1.0.0"
+displayName = "iOS Music"
+authors = "iOS Music"
+description = '''
+一个完全在客户端运行的网易云音乐播放器。
+iOS 27 风格的液态玻璃界面，支持官方接口直连、二维码/手机号/Cookie 登录，也支持 NeteaseCloudMusicApi 第三方服务。
+'''
+logoFile = "icon.png"
+displayURL = "https://music.163.com/"
+
+[[dependencies.iosmusic]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.0,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.iosmusic]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,1.22)"
+ordering = "NONE"
+side = "CLIENT"

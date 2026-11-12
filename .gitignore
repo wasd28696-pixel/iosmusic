@@ -1,0 +1,27 @@
+# ---- 构建产物 ----
+build/
+*/build/
+out/
+analysis/
+
+# ---- Gradle 缓存（不要提交！）----
+.gradle/
+*/.gradle/
+
+# ---- 运行目录（测试时生成的世界/日志）----
+run/
+*/run/
+
+# ---- 日志 ----
+*.log
+*.args
+
+# ---- IDE ----
+.idea/
+.vscode/
+*.iml
+
+# ---- 系统文件 ----
+.DS_Store
+Thumbs.db
+desktop.ini

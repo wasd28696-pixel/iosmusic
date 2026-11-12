@@ -1,0 +1,39 @@
+iOS Music third-party notices
+================================
+
+JLayer 1.0.1
+------------
+Copyright (C) 1999-2004 Javalayer team.
+JLayer is free software; you can redistribute it and/or modify it under the
+terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 2.1 of the License, or (at your option)
+any later version.
+Project: https://www.javazoom.net/javalayer/javalayer.html
+
+ZXing ("Zebra Crossing") core 3.5.3
+-----------------------------------
+Copyright 2008 ZXing authors.
+Licensed under the Apache License, Version 2.0.
+Project: https://github.com/zxing/zxing
+
+Inter
+-----
+Copyright (c) 2016 The Inter Project Authors.
+Licensed under the SIL Open Font License 1.1.
+Project: https://github.com/rsms/inter
+The font was subset to the glyphs used by this interface. The full OFL text is
+included in assets/iosmusic/font/ui/ofl-inter.txt.
+
+Noto Sans SC
+------------
+Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name
+'Source'. Copyright 2015-2021 Google LLC.
+Licensed under the SIL Open Font License 1.1.
+Project: https://fonts.google.com/noto/specimen/Noto+Sans+SC
+The font was subset to the common simplified Chinese character set used by
+this interface. The full OFL text is included in
+assets/iosmusic/font/ui/ofl-notosanssc.txt.
+
+Neither library is modified beyond bundling/subsetting. Both are shaded into
+this mod jar so that the player can decode MP3 streams and render login QR
+codes without extra mods.

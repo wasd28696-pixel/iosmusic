@@ -1,0 +1,13 @@
+{
+    "vertex": "iosmusic:glass_blur",
+    "fragment": "iosmusic:glass_blur",
+    "samplers": [
+        { "name": "Sampler0" }
+    ],
+    "uniforms": [
+        { "name": "ColorModulator", "type": "float", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
+        { "name": "Size", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "TexelSize", "type": "float", "count": 2, "values": [ 0.001, 0.001 ] },
+        { "name": "Direction", "type": "float", "count": 2, "values": [ 1.0, 0.0 ] }
+    ]
+}

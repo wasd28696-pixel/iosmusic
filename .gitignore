@@ -21,6 +21,9 @@ run/
 .vscode/
 *.iml
 
+# ---- 本机构建配置（各人路径不同，不要提交）----
+build.local.ps1
+
 # ---- 系统文件 ----
 .DS_Store
 Thumbs.db

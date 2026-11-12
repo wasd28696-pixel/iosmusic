@@ -1,11 +1,31 @@
-param(
-    [string]$Jdk = "E:\java\java21",
-    [string]$McHome = "E:\.minecraft",
+﻿param(
+    [string]$Jdk,
+    [string]$McHome,
+    [string]$McVersion = "1.21.1",
+    [string]$NeoForgeVersion = "21.1.233",
+    [string]$Instance,
     [switch]$Deploy
 )
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
+. (Join-Path $root "build-common.ps1")
+
+# 本机路径覆盖（可选，加入 .gitignore，不会提交）
+$localConfig = Join-Path $root "build.local.ps1"
+if (Test-Path $localConfig) { . $localConfig }
+
+$Jdk = Resolve-Jdk21 -Requested $Jdk
+$McHome = Resolve-McHome -Requested $McHome -RequiredSubPath "libraries\net\neoforged\neoforge"
+$NeoForgeVersion = Resolve-LoaderVersion `
+    -Directory (Join-Path $McHome "libraries\net\neoforged\neoforge") `
+    -Pattern '^21\.1\.\d+$' -Preferred $NeoForgeVersion -Label "NeoForge 21.1.x"
+
+Write-Host "JDK        : $Jdk"
+Write-Host "Minecraft  : $McHome"
+Write-Host "NeoForge   : $NeoForgeVersion"
+Write-Host ""
+
 $javac = Join-Path $Jdk "bin\javac.exe"
 $jarTool = Join-Path $Jdk "bin\jar.exe"
 if (!(Test-Path $javac)) { throw "javac not found: $javac" }
@@ -18,11 +38,14 @@ $libsOut = Join-Path $build "libs"
 Remove-Item $classes, $shade, $libsOut -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $classes, $shade, $libsOut | Out-Null
 
-$neoClient = Join-Path $McHome "libraries\net\neoforged\neoforge\21.1.233\neoforge-21.1.233-client.jar"
-$neoUniversal = Join-Path $McHome "libraries\net\neoforged\neoforge\21.1.233\neoforge-21.1.233-universal.jar"
-$official = Join-Path $McHome "libraries\net\minecraft\client\1.21.1\client-1.21.1-official.jar"
+$neoDir = Join-Path $McHome "libraries\net\neoforged\neoforge\$NeoForgeVersion"
+$neoClient = Join-Path $neoDir "neoforge-$NeoForgeVersion-client.jar"
+$neoUniversal = Join-Path $neoDir "neoforge-$NeoForgeVersion-universal.jar"
+$official = Resolve-MinecraftClientJar -McHome $McHome -McVersion $McVersion
 foreach ($required in @($neoClient, $neoUniversal, $official)) {
-    if (!(Test-Path $required)) { throw "Missing compile dependency: $required" }
+    if (!(Test-Path $required)) {
+        throw "缺少编译依赖：$required`n请先用启动器启动一次 NeoForge $NeoForgeVersion 的 $McVersion 实例，让依赖下载完整。"
+    }
 }
 
 $classpath = New-Object System.Collections.Generic.List[string]
@@ -52,7 +75,7 @@ $javacArgs = @(
 $javacFile = Join-Path $build "javac.args"
 [IO.File]::WriteAllText($javacFile, ($javacArgs -join "`r`n"), [Text.UTF8Encoding]::new($false))
 
-Write-Host "Compiling $($sources.Count) sources against NeoForge 21.1.233 / Minecraft 1.21.1..."
+Write-Host "Compiling $($sources.Count) sources against NeoForge $NeoForgeVersion / Minecraft $McVersion..."
 & $javac "@$javacFile"
 if ($LASTEXITCODE -ne 0) { throw "javac failed with exit code $LASTEXITCODE" }
 
@@ -100,8 +123,14 @@ $size = (Get-Item $output).Length
 Write-Host ("Built {0} ({1:N1} KiB)" -f $output, ($size / 1024.0))
 
 if ($Deploy) {
-    $mods = Join-Path $McHome "versions\Create+\mods"
-    if (!(Test-Path $mods)) { throw "Test instance mods folder not found: $mods" }
+    if ($Instance) {
+        $mods = Join-Path $McHome "versions\$Instance\mods"
+    } else {
+        $mods = Join-Path $McHome "mods"
+    }
+    if (!(Test-Path $mods)) {
+        throw "找不到 mods 目录：$mods`n请确认 -Instance 指定的实例名，或先手动创建该目录。"
+    }
     $target = Join-Path $mods "iosmusic-1.0.0.jar"
     Copy-Item $output $target -Force
     Write-Host "Deployed to $target"

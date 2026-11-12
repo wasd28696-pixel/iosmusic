@@ -123,20 +123,24 @@ http://127.0.0.1:3000
 
 ## 构建
 
-需要 JDK 21。
+### 前置条件
+
+- **JDK 21**（17 或 8 都不行）
+- **一个装好对应加载器的 Minecraft 1.21.1 实例**。NeoForge / Forge 版用 `javac` 直接编译，编译所需的 jar 取自启动器已下载好的 `.minecraft/libraries`，所以必须先用启动器把这个版本启动过一次，让依赖下载完整。
+
+Fabric 版走 Gradle，只需要 JDK 21。
 
 ### NeoForge（1.21.1）
 
-构建脚本直接复用本地 Minecraft 启动器目录里的 NeoForge 依赖，默认路径为 `E:\.minecraft` 和 `E:\java\java21`，可用 `-McHome` / `-Jdk` 覆盖：
-
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1 `
-  -McHome "$env:APPDATA\.minecraft" -Jdk "C:\Program Files\Java\jdk-21"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 ```
 
-产物：`build/libs/iosmusic-1.0.0.jar`。加 `-Deploy` 会额外复制到测试实例的 `mods` 目录。
+脚本会自动查找 JDK 21 和 `.minecraft` 的位置，并在 `libraries` 里挑可用的 NeoForge 21.1.x。
 
-### Forge（1.21.1 / Forge 52.1.19）
+产物：`build/libs/iosmusic-1.0.0.jar`。加 `-Deploy` 会复制到 `<.minecraft>\mods`；再加 `-Instance <实例名>` 则复制到 `versions\<实例名>\mods`。
+
+### Forge（1.21.1 / Forge 52.1.x）
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build-forge.ps1
@@ -154,6 +158,13 @@ cd fabric1211
 ```
 
 产物：`fabric1211/build/libs/iosmusic-fabric-1.21.1-1.0.0.jar`。
+
+### 自动探测失败时
+
+JDK 或 `.minecraft` 装在非常规位置（比如 `D:\java\jdk21`）导致探测不到时，有两种办法：
+
+1. 临时用参数指定：`-Jdk "D:\java\jdk21"`、`-McHome "D:\Games\.minecraft"`
+2. 复制 `build.local.example.ps1` 为 `build.local.ps1`，在里面写死本机路径。该文件已列入 `.gitignore`，不会被提交。
 
 > 注：1.20.1 的 Forge 移植版暂不在此仓库中维护。
 
